@@ -46,11 +46,14 @@ export function TransactionPageClient({ bookId, initialTransactions, categories 
 
   const handleCreate = async (data: { type: 'income' | 'expense'; category_id: string; amount: number; note?: string; transaction_date: string }) => {
     try {
+      setLoading(true)
       await createTransaction(bookId, data)
-      setOpen(false)
       await loadTransactions()
+      setOpen(false)
     } catch {
       setError('创建交易失败')
+    } finally {
+      setLoading(false)
     }
   }
 

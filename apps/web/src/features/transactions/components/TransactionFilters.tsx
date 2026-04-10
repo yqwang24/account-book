@@ -11,7 +11,8 @@ interface TransactionFiltersProps {
 
 export function TransactionFilters({ onFilterChange, categories }: TransactionFiltersProps) {
   const now = new Date()
-  const [year, setYear] = useState(now.getFullYear())
+  const currentYear = now.getFullYear()
+  const [year, setYear] = useState(currentYear)
   const [month, setMonth] = useState(now.getMonth() + 1)
   const [categoryId, setCategoryId] = useState<string>('')
 
@@ -28,7 +29,7 @@ export function TransactionFilters({ onFilterChange, categories }: TransactionFi
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {[2024, 2025, 2026].map(y => <SelectItem key={y} value={String(y)}>{y}年</SelectItem>)}
+            {[2024, 2025, currentYear].map(y => <SelectItem key={y} value={String(y)}>{y}年</SelectItem>)}
           </SelectContent>
         </Select>
       </div>

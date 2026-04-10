@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -29,6 +30,12 @@ interface TransactionFormProps {
 export function TransactionForm({ open, onOpenChange, onSubmit, categories }: TransactionFormProps) {
   const form = useForm<FormData>({ resolver: zodResolver(schema) })
 
+  useEffect(() => {
+    if (!open) {
+      form.reset()
+    }
+  }, [open, form])
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -43,6 +50,9 @@ export function TransactionForm({ open, onOpenChange, onSubmit, categories }: Tr
                 <SelectItem value="expense">支出</SelectItem>
               </SelectContent>
             </Select>
+            {form.formState.errors.type && (
+              <p className="text-sm text-destructive">{form.formState.errors.type.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">分类</label>
@@ -54,14 +64,23 @@ export function TransactionForm({ open, onOpenChange, onSubmit, categories }: Tr
                 ))}
               </SelectContent>
             </Select>
+            {form.formState.errors.category_id && (
+              <p className="text-sm text-destructive">{form.formState.errors.category_id.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">金额</label>
             <Input type="number" step="0.01" {...form.register('amount', { valueAsNumber: true })} placeholder="0.00" />
+            {form.formState.errors.amount && (
+              <p className="text-sm text-destructive">{form.formState.errors.amount.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">日期</label>
             <Input type="date" {...form.register('transaction_date')} />
+            {form.formState.errors.transaction_date && (
+              <p className="text-sm text-destructive">{form.formState.errors.transaction_date.message}</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">备注</label>
