@@ -25,6 +25,7 @@ export function CategoryList({ bookId, initialCategories }: CategoryListProps) {
   const loadCategories = async () => {
     try {
       setError(null)
+      setLoading(true)
       const data = await getCategories(bookId)
       setCategories(data)
     } catch {
@@ -45,9 +46,16 @@ export function CategoryList({ bookId, initialCategories }: CategoryListProps) {
   }
 
   const handleCreate = async (data: { name: string; type: CategoryType; color?: string; icon?: string }) => {
-    await createCategory(bookId, data)
-    setOpen(false)
-    await loadCategories()
+    try {
+      setLoading(true)
+      await createCategory(bookId, data)
+      setOpen(false)
+      await loadCategories()
+    } catch {
+      setError('创建分类失败')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const openForm = (type: CategoryType) => {
