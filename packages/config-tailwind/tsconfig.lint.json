@@ -1,0 +1,6 @@
+{
+  "extends": "@account-book/config-typescript/base.json",
+  "compilerOptions": {
+    "types": ["node"]
+  }
+}
