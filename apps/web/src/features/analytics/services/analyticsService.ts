@@ -50,21 +50,39 @@ export async function getCategoryStats(bookId: string, year: number, month: numb
 
 export async function getMonthlyTrend(bookId: string, months: number = 6): Promise<MonthlyTrend[]> {
   const now = new Date()
-  const result: MonthlyTrend[] = []
+  const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1)
+  const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+
+  const { data, error } = await supabase
+    .from('transactions')
+    .select('type, amount, transaction_date')
+    .eq('book_id', bookId)
+    .gte('transaction_date', startDate.toISOString().split('T')[0])
+    .lte('transaction_date', endDate.toISOString().split('T')[0])
+    .order('transaction_date')
+
+  if (error) throw error
+
+  const map = new Map<string, { income: number; expense: number }>()
 
   for (let i = months - 1; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
-    const year = d.getFullYear()
-    const month = d.getMonth() + 1
-    const start = d.toISOString().split('T')[0]
-    const end = new Date(year, month, 0).toISOString().split('T')[0]
-
-    const { data } = await supabase.from('transactions').select('type, amount').eq('book_id', bookId).gte('transaction_date', start).lte('transaction_date', end)
-
-    const income = data.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount), 0)
-    const expense = data.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0)
-    result.push({ month: `${year}-${String(month).padStart(2, '0')}`, income, expense })
+    const monthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    map.set(monthKey, { income: 0, expense: 0 })
   }
 
-  return result
+  for (const tx of data) {
+    const monthKey = tx.transaction_date.substring(0, 7)
+    if (map.has(monthKey)) {
+      const entry = map.get(monthKey)!
+      if (tx.type === 'income') entry.income += Number(tx.amount)
+      else entry.expense += Number(tx.amount)
+    }
+  }
+
+  return Array.from(map.entries()).map(([month, values]) => ({
+    month,
+    income: values.income,
+    expense: values.expense,
+  }))
 }

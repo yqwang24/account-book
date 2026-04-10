@@ -1,11 +1,17 @@
+import { getBooks } from '@/features/books/services/bookService'
 import { getMonthlyStats, getCategoryStats, getMonthlyTrend } from '@/features/analytics/services/analyticsService'
 import { StatCard } from '@/features/analytics/components/StatCard'
 import { CategoryPieChart } from '@/features/analytics/components/CategoryPieChart'
 import { MonthlyTrendChart } from '@/features/analytics/components/MonthlyTrendChart'
 
-const DEFAULT_BOOK_ID = '11111111-1111-1111-1111-111111111111'
-
 export default async function DashboardPage() {
+  const books = await getBooks()
+  const DEFAULT_BOOK_ID = books[0]?.id || null
+
+  if (!DEFAULT_BOOK_ID) {
+    return <div className="p-6">请先创建一个账本</div>
+  }
+
   const now = new Date()
   const [stats, categoryStats, trend] = await Promise.all([
     getMonthlyStats(DEFAULT_BOOK_ID, now.getFullYear(), now.getMonth() + 1).catch(() => ({ income: 0, expense: 0, balance: 0 })),

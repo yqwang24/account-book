@@ -23,6 +23,8 @@ interface CategoryFormProps {
   onOpenChange: (open: boolean) => void
   onSubmit: (data: FormData) => Promise<void>
   defaultType: CategoryType
+  initialValues?: Partial<FormData>
+  mode?: 'create' | 'edit'
 }
 
 const PRESET_COLORS = [
@@ -30,17 +32,17 @@ const PRESET_COLORS = [
   '#06B6D4', '#3B82F6', '#6366F1', '#8B5CF6', '#EC4899', '#F43F5E',
 ]
 
-export function CategoryForm({ open, onOpenChange, onSubmit, defaultType }: CategoryFormProps) {
+export function CategoryForm({ open, onOpenChange, onSubmit, defaultType, initialValues, mode = 'create' }: CategoryFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { type: defaultType, color: '#3B82F6', icon: '' },
+    defaultValues: { name: initialValues?.name || '', type: initialValues?.type || defaultType, color: initialValues?.color || '#3B82F6', icon: initialValues?.icon || '' },
   })
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>新建分类</DialogTitle>
+          <DialogTitle>{mode === 'edit' ? '编辑分类' : '新建分类'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div>

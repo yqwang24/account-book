@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { Category, CategoryType } from '../types'
-import { getCategories, createCategory, deleteCategory } from '../services/categoryService'
+import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/categoryService'
 import { Button } from '@account-book/ui'
 import { Card, CardContent, CardHeader, CardTitle } from '@account-book/ui'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@account-book/ui'
 import { Badge } from '@account-book/ui'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Pencil } from 'lucide-react'
 import { CategoryForm } from './CategoryForm'
 
 interface CategoryListProps {
@@ -21,6 +21,7 @@ export function CategoryList({ bookId, initialCategories }: CategoryListProps) {
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
   const [formType, setFormType] = useState<CategoryType>('expense')
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null)
 
   const loadCategories = async () => {
     try {
@@ -48,18 +49,30 @@ export function CategoryList({ bookId, initialCategories }: CategoryListProps) {
   const handleCreate = async (data: { name: string; type: CategoryType; color?: string; icon?: string }) => {
     try {
       setLoading(true)
-      await createCategory(bookId, data)
+      if (editingCategory) {
+        await updateCategory(editingCategory.id, data)
+      } else {
+        await createCategory(bookId, data)
+      }
       setOpen(false)
+      setEditingCategory(null)
       await loadCategories()
     } catch {
-      setError('创建分类失败')
+      setError(editingCategory ? '更新分类失败' : '创建分类失败')
+      setLoading(false)
     } finally {
       setLoading(false)
     }
   }
 
-  const openForm = (type: CategoryType) => {
-    setFormType(type)
+  const openForm = (type: CategoryType, category?: Category) => {
+    if (category) {
+      setEditingCategory(category)
+      setFormType(category.type)
+    } else {
+      setEditingCategory(null)
+      setFormType(type)
+    }
     setOpen(true)
   }
 
@@ -97,6 +110,9 @@ export function CategoryList({ bookId, initialCategories }: CategoryListProps) {
                         <span className="mr-2">{cat.icon}</span>
                         {cat.name}
                       </CardTitle>
+                      <Button variant="ghost" size="icon" onClick={() => openForm(cat.type, cat)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => handleDelete(cat.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -124,6 +140,9 @@ export function CategoryList({ bookId, initialCategories }: CategoryListProps) {
                         <span className="mr-2">{cat.icon}</span>
                         {cat.name}
                       </CardTitle>
+                      <Button variant="ghost" size="icon" onClick={() => openForm(cat.type, cat)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => handleDelete(cat.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -144,6 +163,8 @@ export function CategoryList({ bookId, initialCategories }: CategoryListProps) {
         onOpenChange={setOpen}
         onSubmit={handleCreate}
         defaultType={formType}
+        initialValues={editingCategory ? { name: editingCategory.name, type: editingCategory.type, color: editingCategory.color, icon: editingCategory.icon } : undefined}
+        mode={editingCategory ? 'edit' : 'create'}
       />
     </div>
   )
