@@ -1,0 +1,16 @@
+{
+  "extends": "@account-book/config-typescript/base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@account-book/ui": ["../../packages/ui/src"]
+    }
+  },
+  "include": ["src", "next.config.ts"],
+  "exclude": ["node_modules"]
+}
