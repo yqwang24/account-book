@@ -1,0 +1,9 @@
+{
+  "name": "@account-book/supabase",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "migrate": "psql $DATABASE_URL -f migrations/001_initial_schema.sql",
+    "seed": "psql $DATABASE_URL -f seeds/001_seed.sql"
+  }
+}
