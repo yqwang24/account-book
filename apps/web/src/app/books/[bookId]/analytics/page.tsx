@@ -1,12 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { useParams } from 'next/navigation'
 import { getMonthlyStats, getCategoryStats, getMonthlyTrend } from '@/features/analytics/services/analyticsService'
 import { StatCard } from '@/features/analytics/components/StatCard'
 import { CategoryPieChart } from '@/features/analytics/components/CategoryPieChart'
 import { MonthlyTrendChart } from '@/features/analytics/components/MonthlyTrendChart'
+import { Button } from '@account-book/ui'
+import { ArrowLeft } from 'lucide-react'
 import type { MonthlyStats, CategoryStat, MonthlyTrend } from '@/features/analytics/types'
 
 export default function AnalyticsPage() {
@@ -49,7 +52,10 @@ export default function AnalyticsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center gap-4">
+        <Link href={`/books/${bookId}`}>
+          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
+        </Link>
         <h1 className="text-2xl font-bold">统计分析</h1>
         <div className="flex gap-2 items-end flex-wrap">
           <div>

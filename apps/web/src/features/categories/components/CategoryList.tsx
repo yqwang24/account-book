@@ -1,13 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { Category, CategoryType } from '../types'
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/categoryService'
 import { Button } from '@account-book/ui'
 import { Card, CardContent, CardHeader, CardTitle } from '@account-book/ui'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@account-book/ui'
 import { Badge } from '@account-book/ui'
-import { Trash2, Pencil } from 'lucide-react'
+import { Trash2, Pencil, ArrowLeft } from 'lucide-react'
 import { CategoryForm } from './CategoryForm'
 
 interface CategoryListProps {
@@ -81,7 +82,10 @@ export function CategoryList({ bookId, initialCategories }: CategoryListProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center gap-4">
+        <Link href={`/books/${bookId}`}>
+          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
+        </Link>
         <h1 className="text-2xl font-bold">分类管理</h1>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => openForm('income')}>+ 收入分类</Button>

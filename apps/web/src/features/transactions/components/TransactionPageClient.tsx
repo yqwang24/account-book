@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import { Transaction } from '../types'
 import { getTransactions, createTransaction, deleteTransaction, updateTransaction } from '../services/transactionService'
@@ -8,6 +9,7 @@ import { TransactionList } from './TransactionList'
 import { TransactionFilters } from './TransactionFilters'
 import { TransactionForm } from './TransactionForm'
 import { Button } from '@account-book/ui'
+import { ArrowLeft } from 'lucide-react'
 
 interface TransactionPageClientProps {
   bookId: string
@@ -75,7 +77,10 @@ export function TransactionPageClient({ bookId, initialTransactions, categories 
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center gap-4">
+        <Link href={`/books/${bookId}`}>
+          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
+        </Link>
         <h1 className="text-2xl font-bold">交易记录</h1>
         <Button onClick={() => setOpen(true)}>+ 新增交易</Button>
       </div>
