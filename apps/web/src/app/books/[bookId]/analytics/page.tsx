@@ -51,12 +51,17 @@ export default function AnalyticsPage() {
   if (!bookId) return notFound()
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Link href={`/books/${bookId}`}>
-          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
-        </Link>
-        <h1 className="text-2xl font-bold">统计分析</h1>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href={`/books/${bookId}`}>
+            <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
+          </Link>
+          <div>
+            <h1 className="page-title">统计分析</h1>
+            <p className="page-subtitle">查看收支趋势和分类占比</p>
+          </div>
+        </div>
         <div className="flex gap-2 items-end flex-wrap">
           <div>
             <label className="text-sm font-medium">年份</label>

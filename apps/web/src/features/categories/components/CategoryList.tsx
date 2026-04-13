@@ -81,12 +81,17 @@ export function CategoryList({ bookId, initialCategories }: CategoryListProps) {
   const expenseCategories = categories.filter(c => c.type === 'expense')
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        <Link href={`/books/${bookId}`}>
-          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
-        </Link>
-        <h1 className="text-2xl font-bold">分类管理</h1>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href={`/books/${bookId}`}>
+            <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
+          </Link>
+          <div>
+            <h1 className="page-title">分类管理</h1>
+            <p className="page-subtitle">管理收入和支出分类</p>
+          </div>
+        </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => openForm('income')}>+ 收入分类</Button>
           <Button onClick={() => openForm('expense')}>+ 支出分类</Button>
@@ -107,19 +112,21 @@ export function CategoryList({ bookId, initialCategories }: CategoryListProps) {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {incomeCategories.map(cat => (
-                <Card key={cat.id}>
+                <Card key={cat.id} className="cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-md">
                   <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-base">
                         <span className="mr-2">{cat.icon}</span>
                         {cat.name}
                       </CardTitle>
-                      <Button variant="ghost" size="icon" onClick={() => openForm(cat.type, cat)}>
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(cat.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => openForm(cat.type, cat)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(cat.id)} className="text-gray-400 hover:text-red-500">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -137,19 +144,21 @@ export function CategoryList({ bookId, initialCategories }: CategoryListProps) {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {expenseCategories.map(cat => (
-                <Card key={cat.id}>
+                <Card key={cat.id} className="cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-md">
                   <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-base">
                         <span className="mr-2">{cat.icon}</span>
                         {cat.name}
                       </CardTitle>
-                      <Button variant="ghost" size="icon" onClick={() => openForm(cat.type, cat)}>
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(cat.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => openForm(cat.type, cat)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(cat.id)} className="text-gray-400 hover:text-red-500">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
