@@ -6,7 +6,7 @@ import { Book } from '../types'
 import { getBooks, deleteBook, createBook } from '../services/bookService'
 import { Button } from '@account-book/ui'
 import { Card, CardContent, CardHeader, CardTitle } from '@account-book/ui'
-import { Trash2 } from 'lucide-react'
+import { Trash2, BookOpen } from 'lucide-react'
 import { BookForm } from './BookForm'
 
 export function BookList() {
