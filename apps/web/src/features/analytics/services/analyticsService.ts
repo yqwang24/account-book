@@ -36,7 +36,7 @@ export async function getCategoryStats(bookId: string, year: number, month: numb
 
   const map = new Map<string, CategoryStat>()
   for (const tx of data) {
-    const cat = tx.category as { name: string; color: string; icon: string }
+    const cat = tx.category as unknown as { name: string; color: string; icon: string }
     if (!map.has(tx.category_id)) {
       map.set(tx.category_id, { category_id: tx.category_id, category_name: cat.name, category_color: cat.color, category_icon: cat.icon, total: 0, count: 0 })
     }
