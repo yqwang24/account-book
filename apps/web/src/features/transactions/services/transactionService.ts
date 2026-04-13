@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase/client'
 import type { Transaction, TransactionInput, TransactionFilter } from '../types'
 
 export async function getTransactions(bookId: string, filter?: TransactionFilter): Promise<Transaction[]> {
-  let query = supabase.from('transactions').select('*, category(name, color, icon)').eq('book_id', bookId)
+  let query = supabase.from('transactions').select('*').eq('book_id', bookId)
 
   if (filter?.year && filter?.month) {
     const start = new Date(filter.year, filter.month - 1, 1).toISOString().split('T')[0]
@@ -18,13 +18,13 @@ export async function getTransactions(bookId: string, filter?: TransactionFilter
 }
 
 export async function createTransaction(bookId: string, input: TransactionInput): Promise<Transaction> {
-  const { data, error } = await supabase.from('transactions').insert({ ...input, book_id: bookId }).select('*, category(name, color, icon)').single()
+  const { data, error } = await supabase.from('transactions').insert({ ...input, book_id: bookId }).select().single()
   if (error) throw error
   return data
 }
 
 export async function updateTransaction(id: string, input: TransactionInput): Promise<Transaction> {
-  const { data, error } = await supabase.from('transactions').update(input).eq('id', id).select('*, category(name, color, icon)').single()
+  const { data, error } = await supabase.from('transactions').update(input).eq('id', id).select().single()
   if (error) throw error
   return data
 }

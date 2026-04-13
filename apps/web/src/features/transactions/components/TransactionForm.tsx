@@ -6,9 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Button } from '@account-book/ui'
 import { Input } from '@account-book/ui'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@account-book/ui'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@account-book/ui'
 import { Category } from '@/features/categories/types'
+import type { Transaction } from '../types'
 
 const schema = z.object({
   type: z.enum(['income', 'expense']),
@@ -25,45 +24,87 @@ interface TransactionFormProps {
   onOpenChange: (open: boolean) => void
   onSubmit: (data: FormData) => Promise<void>
   categories: Category[]
+  editingTransaction?: Transaction | null
 }
 
-export function TransactionForm({ open, onOpenChange, onSubmit, categories }: TransactionFormProps) {
-  const form = useForm<FormData>({ resolver: zodResolver(schema) })
+export function TransactionForm({ open, onOpenChange, onSubmit, categories, editingTransaction }: TransactionFormProps) {
+  const form = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: editingTransaction ? {
+      type: editingTransaction.type,
+      category_id: editingTransaction.category_id,
+      amount: editingTransaction.amount,
+      note: editingTransaction.note || '',
+      transaction_date: editingTransaction.transaction_date,
+    } : {
+      type: 'expense',
+      category_id: '',
+      amount: 0,
+      note: '',
+      transaction_date: new Date().toISOString().split('T')[0],
+    }
+  })
+  const selectedType = form.watch('type')
+  const filteredCategories = categories.filter(c => c.type === selectedType && c.id && c.name)
 
   useEffect(() => {
-    if (!open) {
-      form.reset()
+    if (open) {
+      if (editingTransaction) {
+        form.reset({
+          type: editingTransaction.type,
+          category_id: editingTransaction.category_id,
+          amount: editingTransaction.amount,
+          note: editingTransaction.note || '',
+          transaction_date: editingTransaction.transaction_date,
+        })
+      } else {
+        form.reset({
+          type: 'expense',
+          category_id: '',
+          amount: 0,
+          note: '',
+          transaction_date: new Date().toISOString().split('T')[0],
+        })
+      }
     }
-  }, [open, form])
+  }, [open, editingTransaction, form])
+
+  if (!open) return null
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader><DialogTitle>新增交易</DialogTitle></DialogHeader>
+    <div
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      onClick={(e) => { if (e.target === e.currentTarget) onOpenChange(false); }}
+    >
+      <div style={{ background: 'white', padding: '24px', borderRadius: '8px', maxWidth: '500px', width: '100%', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '16px' }}>{editingTransaction ? '编辑交易' : '新增交易'}</h2>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="text-sm font-medium">类型</label>
-            <Select onValueChange={v => form.setValue('type', v as 'income' | 'expense')}>
-              <SelectTrigger><SelectValue placeholder="收入/支出" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="income">收入</SelectItem>
-                <SelectItem value="expense">支出</SelectItem>
-              </SelectContent>
-            </Select>
+            <select
+              {...form.register('type')}
+              className="w-full border rounded-md px-3 py-2"
+              onChange={(e) => form.setValue('type', e.target.value as 'income' | 'expense')}
+            >
+              <option value="">收入/支出</option>
+              <option value="income">收入</option>
+              <option value="expense">支出</option>
+            </select>
             {form.formState.errors.type && (
               <p className="text-sm text-destructive">{form.formState.errors.type.message}</p>
             )}
           </div>
           <div>
             <label className="text-sm font-medium">分类</label>
-            <Select onValueChange={v => form.setValue('category_id', v)}>
-              <SelectTrigger><SelectValue placeholder="选择分类" /></SelectTrigger>
-              <SelectContent>
-                {categories.filter(c => c.type === form.watch('type')).map(c => (
-                  <SelectItem key={c.id} value={c.id}>{c.icon} {c.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <select
+              {...form.register('category_id')}
+              className="w-full border rounded-md px-3 py-2"
+            >
+              <option value="">选择分类</option>
+              {filteredCategories.map(c => (
+                <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
+              ))}
+            </select>
             {form.formState.errors.category_id && (
               <p className="text-sm text-destructive">{form.formState.errors.category_id.message}</p>
             )}
@@ -86,12 +127,12 @@ export function TransactionForm({ open, onOpenChange, onSubmit, categories }: Tr
             <label className="text-sm font-medium">备注</label>
             <Input {...form.register('note')} placeholder="可选备注" />
           </div>
-          <DialogFooter>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>取消</Button>
-            <Button type="submit">保存</Button>
-          </DialogFooter>
+            <Button type="submit">{editingTransaction ? '保存' : '创建'}</Button>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   )
 }

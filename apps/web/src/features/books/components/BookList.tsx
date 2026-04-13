@@ -54,7 +54,7 @@ export function BookList() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">账本列表</h1>
-        <Button onClick={() => setOpen(true)}>+ 新建账本</Button>
+        <Button type="button" onClick={() => setOpen(true)}>+ 新建账本</Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {books.map(book => (

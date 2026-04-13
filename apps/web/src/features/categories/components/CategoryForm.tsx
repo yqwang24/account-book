@@ -5,8 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Button } from '@account-book/ui'
 import { Input } from '@account-book/ui'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@account-book/ui'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@account-book/ui'
 import type { CategoryType } from '../types'
 
 const schema = z.object({
@@ -38,12 +36,15 @@ export function CategoryForm({ open, onOpenChange, onSubmit, defaultType, initia
     defaultValues: { name: initialValues?.name || '', type: initialValues?.type || defaultType, color: initialValues?.color || '#3B82F6', icon: initialValues?.icon || '' },
   })
 
+  if (!open) return null
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{mode === 'edit' ? '编辑分类' : '新建分类'}</DialogTitle>
-        </DialogHeader>
+    <div
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      onClick={(e) => { if (e.target === e.currentTarget) onOpenChange(false); }}
+    >
+      <div style={{ background: 'white', padding: '24px', borderRadius: '8px', maxWidth: '500px', width: '100%', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '16px' }}>{mode === 'edit' ? '编辑分类' : '新建分类'}</h2>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="text-sm font-medium">分类名称</label>
@@ -54,15 +55,13 @@ export function CategoryForm({ open, onOpenChange, onSubmit, defaultType, initia
           </div>
           <div>
             <label className="text-sm font-medium">类型</label>
-            <Select onValueChange={(v) => form.setValue('type', v as CategoryType)} defaultValue={defaultType}>
-              <SelectTrigger>
-                <SelectValue placeholder="选择类型" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="income">收入</SelectItem>
-                <SelectItem value="expense">支出</SelectItem>
-              </SelectContent>
-            </Select>
+            <select
+              {...form.register('type')}
+              className="w-full border rounded-md px-3 py-2"
+            >
+              <option value="income">收入</option>
+              <option value="expense">支出</option>
+            </select>
           </div>
           <div>
             <label className="text-sm font-medium">颜色</label>
@@ -82,12 +81,12 @@ export function CategoryForm({ open, onOpenChange, onSubmit, defaultType, initia
             <label className="text-sm font-medium">图标</label>
             <Input {...form.register('icon')} placeholder="例如：🍜" maxLength={10} />
           </div>
-          <DialogFooter>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>取消</Button>
-            <Button type="submit">创建</Button>
-          </DialogFooter>
+            <Button type="submit">{mode === 'edit' ? '保存' : '创建'}</Button>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   )
 }

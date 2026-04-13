@@ -4,14 +4,15 @@ import { Transaction } from '../types'
 import { formatCurrency, formatDate } from '@account-book/ui'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@account-book/ui'
 import { Button } from '@account-book/ui'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Pencil } from 'lucide-react'
 
 interface TransactionListProps {
   transactions: Transaction[]
   onDelete: (id: string) => void
+  onEdit: (transaction: Transaction) => void
 }
 
-export function TransactionList({ transactions, onDelete }: TransactionListProps) {
+export function TransactionList({ transactions, onDelete, onEdit }: TransactionListProps) {
   return (
     <Table>
       <TableHeader>
@@ -40,7 +41,10 @@ export function TransactionList({ transactions, onDelete }: TransactionListProps
               {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
             </TableCell>
             <TableCell className="text-muted-foreground">{tx.note || '-'}</TableCell>
-            <TableCell>
+            <TableCell className="flex gap-1">
+              <Button variant="ghost" size="icon" onClick={() => onEdit(tx)}>
+                <Pencil className="h-4 w-4" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={() => onDelete(tx.id)}>
                 <Trash2 className="h-4 w-4" />
               </Button>

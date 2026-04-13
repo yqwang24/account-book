@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Transaction } from '../types'
-import { getTransactions, createTransaction, deleteTransaction } from '../services/transactionService'
+import { getTransactions, createTransaction, deleteTransaction, updateTransaction } from '../services/transactionService'
 import { Category } from '@/features/categories/types'
 import { TransactionList } from './TransactionList'
 import { TransactionFilters } from './TransactionFilters'
@@ -20,6 +20,7 @@ export function TransactionPageClient({ bookId, initialTransactions, categories 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
 
   const loadTransactions = async (filter?: { year: number; month: number; categoryId?: string }) => {
     try {
@@ -44,17 +45,32 @@ export function TransactionPageClient({ bookId, initialTransactions, categories 
     }
   }
 
+  const handleEdit = (transaction: Transaction) => {
+    setEditingTransaction(transaction)
+    setOpen(true)
+  }
+
   const handleCreate = async (data: { type: 'income' | 'expense'; category_id: string; amount: number; note?: string; transaction_date: string }) => {
     try {
       setLoading(true)
-      await createTransaction(bookId, data)
+      if (editingTransaction) {
+        await updateTransaction(editingTransaction.id, data)
+      } else {
+        await createTransaction(bookId, data)
+      }
       await loadTransactions()
       setOpen(false)
+      setEditingTransaction(null)
     } catch {
-      setError('创建交易失败')
+      setError(editingTransaction ? '更新交易失败' : '创建交易失败')
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+    setEditingTransaction(null)
   }
 
   return (
@@ -70,13 +86,14 @@ export function TransactionPageClient({ bookId, initialTransactions, categories 
       />
 
       {error && <p className="text-red-500">{error}</p>}
-      {loading ? <p>加载中...</p> : <TransactionList transactions={transactions} onDelete={handleDelete} />}
+      {loading ? <p>加载中...</p> : <TransactionList transactions={transactions} onDelete={handleDelete} onEdit={handleEdit} />}
 
       <TransactionForm
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={(v) => { if (!v) handleClose(); }}
         onSubmit={handleCreate}
         categories={categories}
+        editingTransaction={editingTransaction}
       />
     </div>
   )

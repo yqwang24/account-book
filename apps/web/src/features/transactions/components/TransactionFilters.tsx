@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@account-book/ui'
 import { Button } from '@account-book/ui'
 
 interface TransactionFiltersProps {
@@ -21,42 +20,39 @@ export function TransactionFilters({ onFilterChange, categories }: TransactionFi
   }
 
   return (
-    <div className="flex gap-4 items-end">
+    <div className="flex gap-4 items-end flex-wrap">
       <div>
         <label className="text-sm font-medium">年份</label>
-        <Select value={String(year)} onValueChange={v => setYear(+v)}>
-          <SelectTrigger className="w-[120px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {[2024, 2025, currentYear].map(y => <SelectItem key={y} value={String(y)}>{y}年</SelectItem>)}
-          </SelectContent>
-        </Select>
+        <select
+          value={String(year)}
+          onChange={e => setYear(+e.target.value)}
+          className="w-[120px] border rounded-md px-3 py-2"
+        >
+          {[2024, 2025, currentYear].map(y => <option key={y} value={String(y)}>{y}年</option>)}
+        </select>
       </div>
       <div>
         <label className="text-sm font-medium">月份</label>
-        <Select value={String(month)} onValueChange={v => setMonth(+v)}>
-          <SelectTrigger className="w-[100px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-              <SelectItem key={m} value={String(m)}>{m}月</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <select
+          value={String(month)}
+          onChange={e => setMonth(+e.target.value)}
+          className="w-[100px] border rounded-md px-3 py-2"
+        >
+          {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+            <option key={m} value={String(m)}>{m}月</option>
+          ))}
+        </select>
       </div>
       <div>
         <label className="text-sm font-medium">分类</label>
-        <Select value={categoryId} onValueChange={setCategoryId}>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="全部" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">全部</SelectItem>
-            {categories.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-          </SelectContent>
-        </Select>
+        <select
+          value={categoryId}
+          onChange={e => setCategoryId(e.target.value)}
+          className="w-[150px] border rounded-md px-3 py-2"
+        >
+          <option value="">全部</option>
+          {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+        </select>
       </div>
       <Button onClick={handleApply}>筛选</Button>
     </div>

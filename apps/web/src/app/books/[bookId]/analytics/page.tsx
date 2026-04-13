@@ -7,7 +7,6 @@ import { getMonthlyStats, getCategoryStats, getMonthlyTrend } from '@/features/a
 import { StatCard } from '@/features/analytics/components/StatCard'
 import { CategoryPieChart } from '@/features/analytics/components/CategoryPieChart'
 import { MonthlyTrendChart } from '@/features/analytics/components/MonthlyTrendChart'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@account-book/ui'
 import type { MonthlyStats, CategoryStat, MonthlyTrend } from '@/features/analytics/types'
 
 export default function AnalyticsPage() {
@@ -52,32 +51,30 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">统计分析</h1>
-        <div className="flex gap-2 items-end">
+        <div className="flex gap-2 items-end flex-wrap">
           <div>
             <label className="text-sm font-medium">年份</label>
-            <Select value={String(year)} onValueChange={v => setYear(+v)}>
-              <SelectTrigger className="w-[120px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {[2024, 2025, 2026].map(y => (
-                  <SelectItem key={y} value={String(y)}>{y}年</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <select
+              value={String(year)}
+              onChange={e => setYear(+e.target.value)}
+              className="w-[120px] border rounded-md px-3 py-2"
+            >
+              {[2024, 2025, 2026].map(y => (
+                <option key={y} value={String(y)}>{y}年</option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="text-sm font-medium">月份</label>
-            <Select value={String(month)} onValueChange={v => setMonth(+v)}>
-              <SelectTrigger className="w-[100px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-                  <SelectItem key={m} value={String(m)}>{m}月</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <select
+              value={String(month)}
+              onChange={e => setMonth(+e.target.value)}
+              className="w-[100px] border rounded-md px-3 py-2"
+            >
+              {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                <option key={m} value={String(m)}>{m}月</option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
