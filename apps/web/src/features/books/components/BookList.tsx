@@ -6,7 +6,7 @@ import { Book } from '../types'
 import { getBooks, deleteBook, createBook } from '../services/bookService'
 import { Button } from '@account-book/ui'
 import { Card, CardContent, CardHeader, CardTitle } from '@account-book/ui'
-import { Trash2, BookOpen } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { BookForm } from './BookForm'
 
 export function BookList() {
@@ -85,7 +85,6 @@ export function BookList() {
         ))}
         {books.length === 0 && (
           <div className="col-span-full text-center py-16 text-gray-400">
-            <BookOpen className="h-16 w-16 mx-auto mb-4 opacity-30" />
             <p className="text-lg">还没有账本</p>
             <p className="text-sm">点击上方按钮创建一个新账本</p>
           </div>
