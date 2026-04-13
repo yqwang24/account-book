@@ -26,12 +26,12 @@ export function BookForm({ open, onOpenChange, onSubmit }: BookFormProps) {
 
   return (
     <div
-      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       onClick={(e) => { if (e.target === e.currentTarget) onOpenChange(false); }}
     >
-      <div style={{ background: 'white', padding: '24px', borderRadius: '8px', maxWidth: '500px', width: '100%', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '16px' }}>新建账本</h2>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <div style={{ background: 'white', padding: '32px', borderRadius: '16px', maxWidth: '480px', width: '90%', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '24px', color: '#1f2937' }}>新建账本</h2>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <div>
             <label className="text-sm font-medium">账本名称</label>
             <Input {...form.register('name')} placeholder="例如：我的账本" />

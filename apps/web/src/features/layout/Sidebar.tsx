@@ -14,9 +14,10 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-64 border-r bg-card h-full flex flex-col">
-      <div className="p-4 border-b">
-        <h2 className="font-bold text-lg">记账本</h2>
+    <aside className="w-64 border-r bg-gradient-to-b from-white to-gray-50 h-full flex flex-col shadow-sm">
+      <div className="p-5 border-b bg-gradient-to-r from-primary/5 to-transparent">
+        <h2 className="font-bold text-lg text-primary">记账本</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">个人财务管家</p>
       </div>
       <nav className="flex-1 p-4 space-y-1">
         {navItems.map(item => {
@@ -27,18 +28,20 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-accent'
+                'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200',
+                isActive
+                  ? 'bg-primary text-primary-foreground shadow-md'
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
               )}
             >
-              <Icon className="h-4 w-4" />
+              <Icon className={cn('h-5 w-5', isActive ? '' : 'text-gray-400')} />
               {item.label}
             </Link>
           )
         })}
       </nav>
-      <div className="p-4 border-t text-xs text-muted-foreground">
-        单用户账本 v1.0
+      <div className="p-4 border-t text-center">
+        <p className="text-xs text-muted-foreground">v1.0.0</p>
       </div>
     </aside>
   )

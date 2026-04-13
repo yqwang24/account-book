@@ -76,13 +76,18 @@ export function TransactionPageClient({ bookId, initialTransactions, categories 
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        <Link href={`/books/${bookId}`}>
-          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
-        </Link>
-        <h1 className="text-2xl font-bold">交易记录</h1>
-        <Button onClick={() => setOpen(true)}>+ 新增交易</Button>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href={`/books/${bookId}`}>
+            <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
+          </Link>
+          <div>
+            <h1 className="page-title">交易记录</h1>
+            <p className="page-subtitle">管理账目的收支明细</p>
+          </div>
+        </div>
+        <Button size="lg" onClick={() => setOpen(true)}>+ 新增交易</Button>
       </div>
 
       <TransactionFilters

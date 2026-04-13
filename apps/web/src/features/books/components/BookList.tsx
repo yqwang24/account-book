@@ -51,30 +51,45 @@ export function BookList() {
   if (error) return <div className="text-red-500">{error}</div>
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">账本列表</h1>
-        <Button type="button" onClick={() => setOpen(true)}>+ 新建账本</Button>
+        <div>
+          <h1 className="page-title">账本列表</h1>
+          <p className="page-subtitle">管理您的所有账本</p>
+        </div>
+        <Button size="lg" onClick={() => setOpen(true)}>+ 新建账本</Button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {books.map(book => (
           <Link key={book.id} href={`/books/${book.id}`}>
-            <Card className="cursor-pointer hover:shadow-md transition-shadow">
-              <CardHeader>
-                <CardTitle>{book.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{book.description || '暂无描述'}</p>
-                <div className="mt-4" onClick={(e) => e.preventDefault()}>
-                  <Button variant="destructive" size="sm" onClick={() => handleDelete(book.id)}>
+            <Card className="cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-md">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg">{book.name}</CardTitle>
+                  <Button variant="ghost" size="icon" className="text-gray-400 hover:text-red-500" onClick={(e) => { e.preventDefault(); handleDelete(book.id); }}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-500 mb-4">{book.description || '暂无描述'}</p>
+                <div className="flex items-center text-xs text-gray-400">
+                  <span className="inline-flex items-center gap-1">
+                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    使用中
+                  </span>
                 </div>
               </CardContent>
             </Card>
           </Link>
         ))}
-        {books.length === 0 && <p className="text-muted-foreground">还没有账本，点击新建创建一个</p>}
+        {books.length === 0 && (
+          <div className="col-span-full text-center py-16 text-gray-400">
+            <BookOpen className="h-16 w-16 mx-auto mb-4 opacity-30" />
+            <p className="text-lg">还没有账本</p>
+            <p className="text-sm">点击上方按钮创建一个新账本</p>
+          </div>
+        )}
       </div>
       <BookForm open={open} onOpenChange={setOpen} onSubmit={handleCreate} />
     </div>
